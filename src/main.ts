@@ -15,12 +15,12 @@ class Main {
         const canvasHelper: CanvasHelper = new CanvasHelper();
         canvasHelper.initCanvas(canvas);
 
-        this._particleService = new ParticleService(ctx,3);
+        this._particleService = new ParticleService(ctx);
         this.loop();
     }
 
     private loop(): void {
-        this._particleService.init(1);
+        this._particleService.init();
 
         window.requestAnimationFrame(() => this.loop())
     }

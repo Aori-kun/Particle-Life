@@ -3,9 +3,9 @@ export class Particle {
     private _y: number;
     private _vx:number;
     private _vy: number;
-    private _color:string;
+    private _color:number;
 
-    constructor(x: number, y: number, vx: number, vy: number, color: string) {
+    constructor(x: number, y: number, vx: number, vy: number, color: number) {
         this._x = x;
         this._y = y;
         this._vx = vx;
@@ -46,11 +46,11 @@ export class Particle {
         this._vy = value;
     }
 
-    get color(): string {
+    get color(): number {
         return this._color;
     }
 
-    set color(value: string) {
+    set color(value: number) {
         this._color = value;
     }
 }
