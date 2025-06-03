@@ -1,15 +1,19 @@
 export class Particle {
     private _x: number;
     private _y: number;
+    private _z: number;
     private _vx:number;
     private _vy: number;
+    private _vz:number;
     private _color:number;
 
-    constructor(x: number, y: number, vx: number, vy: number, color: number) {
+    constructor(x: number, y: number, z: number, vx: number, vy: number, vz: number, color: number) {
         this._x = x;
         this._y = y;
+        this._z = z;
         this._vx = vx;
         this._vy = vy;
+        this._vz = vz;
         this._color = color;
     }
 
@@ -30,6 +34,14 @@ export class Particle {
         this._y = value;
     }
 
+    get z(): number {
+        return this._z;
+    }
+
+    set z(value: number) {
+        this._z = value;
+    }
+
     get vx(): number {
         return this._vx;
     }
@@ -44,6 +56,14 @@ export class Particle {
 
     set vy(value: number) {
         this._vy = value;
+    }
+
+    get vz(): number {
+        return this._vz;
+    }
+
+    set vz(value: number) {
+        this._vz = value;
     }
 
     get color(): number {

@@ -23,8 +23,10 @@ export class ParticleService {
 
         for (let i: number = 0; i < NB_PARTICLES; i++) {
             particles.push(new Particle(
-                Math.random(),
-                Math.random(),
+                Math.random() * 2 - 1,
+                Math.random() * 2 - 1,
+                Math.random() * 2 - 1,
+                0,
                 0,
                 0,
                 Math.floor(Math.random() * NB_COLOR)
@@ -38,13 +40,15 @@ export class ParticleService {
         this._particles.forEach((particle: Particle): void => {
             let totalForceX: number = 0;
             let totalForceY: number = 0;
+            let totalForceZ: number = 0;
 
             this._particles.forEach((otherParticle: Particle): void => {
                 if (particle === otherParticle) return;
                 const distanceX: number = otherParticle.x - particle.x;
                 const distanceY: number = otherParticle.y - particle.y;
+                const distanceZ: number = otherParticle.z - particle.z;
 
-                const distance: number = Math.hypot(distanceX, distanceY);
+                const distance: number = Math.sqrt(distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ);
 
                 if (distance > 0 && distance < DISTANCE_MAX) {
                     const force: number = this.calculateForce(distance / DISTANCE_MAX, this._colorWeights[particle.color][otherParticle.color]);
@@ -55,18 +59,24 @@ export class ParticleService {
 
             totalForceX *= DISTANCE_MAX * FORCE_FACTOR;
             totalForceY *= DISTANCE_MAX * FORCE_FACTOR;
+            totalForceZ *= DISTANCE_MAX * FORCE_FACTOR;
 
             particle.vx *= FRICTION_FACTOR;
             particle.vy *= FRICTION_FACTOR;
+            particle.vz *= FRICTION_FACTOR;
 
             particle.vx += totalForceX * DELTA_TIME;
             particle.vy += totalForceY * DELTA_TIME;
+            particle.vz += totalForceZ * DELTA_TIME;
         })
 
         this._particles.forEach((particle: Particle): void => {
             particle.x += particle.vx * DELTA_TIME;
             particle.y += particle.vy * DELTA_TIME;
+            particle.z += particle.vz * DELTA_TIME;
         })
+
+        //TODO: HANDLE PARTICLE OFF SCREEN
 
         this.draw();
     }
@@ -75,8 +85,9 @@ export class ParticleService {
         this._ctx.clearRect(0, 0, this._ctx.canvas.width, this._ctx.canvas.height);
 
         this._particles.forEach((particle: Particle): void => {
-            const screenX: number = particle.x * this._ctx.canvas.width;
-            const screenY: number = particle.y * this._ctx.canvas.height;
+            const f: number = 1 / (particle.z + 2);
+            const screenX: number = (f * particle.x + 1) * .5 * this._ctx.canvas.width;
+            const screenY: number = (f * particle.y + 1) * .5 * this._ctx.canvas.height;
 
             this._ctx.beginPath();
             this._ctx.arc(screenX, screenY, 2, 0, 2 * Math.PI);
