@@ -1,107 +1,128 @@
 import {Particle} from "./particle.model.ts";
-import {
-    BETA,
-    DELTA_TIME,
-    DISTANCE_MAX,
-    FORCE_FACTOR,
-    FRICTION_FACTOR,
-    NB_COLOR,
-    NB_PARTICLES
-} from "../config/config.ts";
+import {NB_COLORS, NB_PARTICLES, PARTICLE_SIZE, VELOCITY} from "../config/config.ts";
 import {ColorService} from "../colors/color.service.ts";
+import {MassService} from "../mass/mass.service.ts";
+import {PositionService} from "../postion/position.service.ts";
+import {WeightService} from "../weight/weight.service.ts";
 
 export class ParticleService {
     private readonly _particles: Particle[] = [];
+    private readonly _forces: number[][] = [];
+    private readonly _colors: string[] = [];
     private readonly _ctx: CanvasRenderingContext2D;
-    private readonly _colorWeights: number[][];
 
     constructor(ctx: CanvasRenderingContext2D) {
         this._ctx = ctx;
-        this._colorWeights = ColorService.generateColorWeight();
-
         const particles: Particle[] = [];
 
-        for (let i: number = 0; i < NB_PARTICLES; i++) {
-            particles.push(new Particle(
-                Math.random() * 2 - 1,
-                Math.random() * 2 - 1,
-                Math.random() * 2 - 1,
-                0,
-                0,
-                0,
-                Math.floor(Math.random() * NB_COLOR)
-            ))
+        const nbParticlesPerColor: number = NB_PARTICLES / NB_COLORS;
+        const colors: string[] = [];
+
+        for (let i: number = 0; i < NB_COLORS; i++) {
+
+            const color: string = ColorService.generateColor();
+            const mass: number = MassService.generateMass();
+
+            for (let j: number = 0; j < nbParticlesPerColor; j++) {
+                const position: { x: number, y: number } = PositionService.generatePosition(this._ctx.canvas.width, this._ctx.canvas.height);
+                particles.push(new Particle(position.x, position.y, mass, color));
+            }
+
+            colors.push(color);
         }
 
+        this._colors = colors;
+        this._forces = WeightService.generateWeight(colors);
         this._particles = particles;
     }
 
     public init(): void {
-        this._particles.forEach((particle: Particle): void => {
-            let totalForceX: number = 0;
-            let totalForceY: number = 0;
-            let totalForceZ: number = 0;
-
-            this._particles.forEach((otherParticle: Particle): void => {
-                if (particle === otherParticle) return;
-                const distanceX: number = otherParticle.x - particle.x;
-                const distanceY: number = otherParticle.y - particle.y;
-                const distanceZ: number = otherParticle.z - particle.z;
-
-                const distance: number = Math.sqrt(distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ);
-
-                if (distance > 0 && distance < DISTANCE_MAX) {
-                    const force: number = this.calculateForce(distance / DISTANCE_MAX, this._colorWeights[particle.color][otherParticle.color]);
-                    totalForceX += distanceX / distance * force;
-                    totalForceY += distanceY / distance * force;
-                }
-            })
-
-            totalForceX *= DISTANCE_MAX * FORCE_FACTOR;
-            totalForceY *= DISTANCE_MAX * FORCE_FACTOR;
-            totalForceZ *= DISTANCE_MAX * FORCE_FACTOR;
-
-            particle.vx *= FRICTION_FACTOR;
-            particle.vy *= FRICTION_FACTOR;
-            particle.vz *= FRICTION_FACTOR;
-
-            particle.vx += totalForceX * DELTA_TIME;
-            particle.vy += totalForceY * DELTA_TIME;
-            particle.vz += totalForceZ * DELTA_TIME;
-        })
-
-        this._particles.forEach((particle: Particle): void => {
-            particle.x += particle.vx * DELTA_TIME;
-            particle.y += particle.vy * DELTA_TIME;
-            particle.z += particle.vz * DELTA_TIME;
-        })
-
-        //TODO: HANDLE PARTICLE OFF SCREEN
-
+        this.applyForces();
         this.draw();
+    }
+
+    private applyForces(): void {
+        for (const particle of this._particles) {
+            let forceX: number = 0;
+            let forceY: number = 0;
+
+            const width: number = this._ctx.canvas.width;
+            const height: number = this._ctx.canvas.height;
+            const limit: number = 500;
+
+            for (const otherParticle of this._particles) {
+                if (particle === otherParticle) continue;
+
+                let otherX: number = otherParticle.x;
+                let otherY: number = otherParticle.y;
+
+                if (particle.x > width - limit && otherX < limit) {
+                    otherX += width;
+                } else if (particle.x < limit && otherX > width - limit) {
+                    otherX -= width;
+                }
+
+                if (particle.y > height - limit && otherY < limit) {
+                    otherY += height;
+                } else if (particle.y < limit && otherY > height - limit) {
+                    otherY -= height;
+                }
+
+                const distanceX: number = otherX - particle.x;
+                const distanceY: number = otherY - particle.y;
+                const distance: number = Math.hypot(distanceX, distanceY);
+
+                if (distance < limit) {
+                    const g: number = this.getGravitationalForce(particle, otherParticle);
+                    const m1: number = otherParticle.mass;
+                    const m2: number = particle.mass;
+                    let force: number = (g * m1 * m2) / (distance ** 2);
+
+                    const scale: number = 8;
+                    const collisionD: number = otherParticle.mass * scale + particle.mass * scale;
+
+                    if (distance <= collisionD) {
+                        force *= force < 0 ? 1 : -1;
+                    }
+
+                    forceX += (force * distanceX) / particle.mass;
+                    forceY += (force * distanceY) / particle.mass;
+                }
+            }
+
+            particle.vx += forceX;
+            particle.vy += forceY;
+
+
+            particle.vx *= VELOCITY;
+            particle.vy *= VELOCITY;
+        }
+
+        for (const particle of this._particles) {
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+
+            if (particle.x < 0) particle.x += this._ctx.canvas.width;
+            if (particle.y < 0) particle.y += this._ctx.canvas.height;
+            if (particle.x > this._ctx.canvas.width) particle.x -= this._ctx.canvas.width;
+            if (particle.y > this._ctx.canvas.height) particle.y -= this._ctx.canvas.height;
+        }
+    }
+
+    private getGravitationalForce(particle: Particle, otherParticle: Particle): number {
+        const indexColorParticle: number = this._colors.indexOf(particle.color);
+        const indexColorOtherParticle: number = this._colors.indexOf(otherParticle.color);
+        return this._forces[indexColorParticle][indexColorOtherParticle];
     }
 
     private draw(): void {
         this._ctx.clearRect(0, 0, this._ctx.canvas.width, this._ctx.canvas.height);
 
-        this._particles.forEach((particle: Particle): void => {
-            const f: number = 1 / (particle.z + 2);
-            const screenX: number = (f * particle.x + 1) * .5 * this._ctx.canvas.width;
-            const screenY: number = (f * particle.y + 1) * .5 * this._ctx.canvas.height;
-
+        for (const particle of this._particles) {
             this._ctx.beginPath();
-            this._ctx.arc(screenX, screenY, 2, 0, 2 * Math.PI);
-            this._ctx.fillStyle = `hsl(${360 * (particle.color / NB_COLOR)}, 100%,50%)`;
+            this._ctx.arc(particle.x, particle.y, PARTICLE_SIZE, 0, 2 * Math.PI);
+            this._ctx.fillStyle = particle.color;
             this._ctx.fill();
-        });
-    }
-
-    private calculateForce(distance: number, acceleration: number): number {
-        if (distance < BETA) {
-            return distance / BETA - 1;
-        } else if (BETA < distance && distance < 1) {
-            return acceleration * (1 - Math.abs(2 * distance - 1 - BETA) / (1 - BETA));
         }
-        return 0;
     }
 }
