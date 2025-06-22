@@ -53,30 +53,27 @@ export class ParticleService {
             for (const otherParticle of this._particles) {
                 if (particle === otherParticle) continue;
 
-                let otherX: number = otherParticle.x;
-                let otherY: number = otherParticle.y;
-
-                if (particle.x > width - limit && otherX < limit) {
-                    otherX += width;
-                } else if (particle.x < limit && otherX > width - limit) {
-                    otherX -= width;
+                if (particle.x > width - limit && otherParticle.x < limit) {
+                    otherParticle.x += width;
+                } else if (particle.x < limit && otherParticle.x > width - limit) {
+                    otherParticle.x -= width;
                 }
 
-                if (particle.y > height - limit && otherY < limit) {
-                    otherY += height;
-                } else if (particle.y < limit && otherY > height - limit) {
-                    otherY -= height;
+                if (particle.y > height - limit && otherParticle.y < limit) {
+                    otherParticle.y += height;
+                } else if (particle.y < limit && otherParticle.y > height - limit) {
+                    otherParticle.y -= height;
                 }
 
-                const distanceX: number = otherX - particle.x;
-                const distanceY: number = otherY - particle.y;
-                const distance: number = Math.hypot(distanceX, distanceY);
+                const distanceX: number = otherParticle.x - particle.x;
+                const distanceY: number = otherParticle.y - particle.y;
+                const distance: number = Math.sqrt(distanceX**2 + distanceY**2);
 
                 if (distance < limit) {
                     const g: number = this.getGravitationalForce(particle, otherParticle);
                     const m1: number = otherParticle.mass;
                     const m2: number = particle.mass;
-                    let force: number = (g * m1 * m2) / (distance ** 2);
+                    let force: number = (g * m1 * m2) / distance ** 2;
 
                     const scale: number = 8;
                     const collisionD: number = otherParticle.mass * scale + particle.mass * scale;
@@ -123,6 +120,11 @@ export class ParticleService {
             this._ctx.arc(particle.x, particle.y, PARTICLE_SIZE, 0, 2 * Math.PI);
             this._ctx.fillStyle = particle.color;
             this._ctx.fill();
+            this._ctx.shadowBlur = 8;
+            this._ctx.shadowColor = particle.color;
+            this._ctx.shadowOffsetX = 0;
+            this._ctx.shadowOffsetY = 0;
+            this._ctx.closePath();
         }
     }
 }

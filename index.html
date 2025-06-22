@@ -1,13 +1,173 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/src/style.css" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/src/style.css"/>
     <title>Vite + TS</title>
-  </head>
-  <body>
-    <canvas></canvas>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+</head>
+<body>
+<canvas></canvas>
+<div class="settings__panel">
+    <div class="settings__panel__header">
+        <p>Color's weight</p>
+        <img src="/img/reload.svg" alt=""/>
+    </div>
+    <div class="settings__panel__weight">
+        <table>
+            <tr>
+                <th></th>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="horizontal-color-indicator"></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="horizontal-color-indicator"></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="horizontal-color-indicator"></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="horizontal-color-indicator"></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="horizontal-color-indicator"></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="horizontal-color-indicator"></div>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="vertical-color-indicator 1"></div>
+                    </div>
+                </th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="vertical-color-indicator 2"></div>
+                    </div>
+                </th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="vertical-color-indicator 3"></div>
+                    </div>
+                </th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="vertical-color-indicator 4"></div>
+                    </div>
+                </th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="vertical-color-indicator 5"></div>
+                    </div>
+                </th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>
+                    <div class="container__color-indicator">
+                        <div class="vertical-color-indicator 6"></div>
+                    </div>
+                </th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div class="settings__panel__random">
+        <button>Random</button>
+    </div>
+    <span class="separator"></span>
+    <div>
+        <div class="settings__panel__input">
+            <div class="settings__panel__input__context">
+                <img src="/img/moon.svg" alt=""/>
+                <label>Switch to Light</label>
+            </div>
+            <div class="switch">
+                <label>
+                    <input type="checkbox" role="switch" aria-labelledby="switch-label"/>
+                </label>
+            </div>
+        </div>
+        <div class="settings__panel__input">
+            <div class="settings__panel__input__context">
+                <img src="/img/blur.svg" alt=""/>
+                <label>Display Blur</label>
+            </div>
+            <div class="switch">
+                <label>
+                    <input type="checkbox" role="switch" aria-labelledby="switch-label"/>
+                </label>
+            </div>
+        </div>
+        <div class="settings__panel__input">
+            <div class="settings__panel__input__context">
+                <img src="/img/pen.svg" alt=""/>
+                <label>Erase stroke</label>
+            </div>
+            <div class="toogle">
+                <label>
+                    <input type="checkbox" role="switch" aria-labelledby="switch-label"/>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
 </html>

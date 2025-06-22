@@ -1,8 +1,6 @@
-import {PARTICLE_SIZE} from "../config/config.ts";
-
 export class PositionService {
     public static generatePosition(width: number, height: number): { x: number, y: number } {
-        const size: number = width / PARTICLE_SIZE;
+        const size: number = width / 10;
         const midX: number = width / 2;
         const midY: number = height / 2;
 
