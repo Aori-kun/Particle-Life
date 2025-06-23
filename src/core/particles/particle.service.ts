@@ -4,6 +4,7 @@ import {ColorService} from "../colors/color.service.ts";
 import {MassService} from "../mass/mass.service.ts";
 import {PositionService} from "../postion/position.service.ts";
 import {WeightService} from "../weight/weight.service.ts";
+import {Panel} from "../../panel/panel.ts";
 
 export class ParticleService {
     private readonly _particles: Particle[] = [];
@@ -31,9 +32,10 @@ export class ParticleService {
             colors.push(color);
         }
 
+        this._particles = particles;
         this._colors = colors;
         this._forces = WeightService.generateWeight(colors);
-        this._particles = particles;
+        new Panel(colors, this._forces);
     }
 
     public init(): void {
