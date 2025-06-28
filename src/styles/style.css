@@ -115,6 +115,12 @@ html, body {
                         }
                     }
                 }
+
+                td:hover {
+                    opacity: .7;
+                    cursor: pointer;
+                    border: 1px solid var(--default-indicator-color);
+                }
             }
         }
 

@@ -24,7 +24,7 @@ export class ParticleService {
 
         const nbParticlesPerColor: number = NB_PARTICLES / NB_COLORS;
 
-        for (const color of Panel._colors) {
+        for (const color of Panel.colors) {
             const mass: number = MassService.generateMass();
 
             for (let i: number = 0; i < nbParticlesPerColor; i++) {
@@ -105,9 +105,9 @@ export class ParticleService {
     }
 
     private getGravitationalForce(particle: Particle, otherParticle: Particle): number {
-        const indexColorParticle: number = Panel._colors.indexOf(particle.color);
-        const indexColorOtherParticle: number = Panel._colors.indexOf(otherParticle.color);
-        return Panel._forces[indexColorParticle][indexColorOtherParticle];
+        const indexColorParticle: number = Panel.colors.indexOf(particle.color);
+        const indexColorOtherParticle: number = Panel.colors.indexOf(otherParticle.color);
+        return Panel.forces[indexColorParticle][indexColorOtherParticle];
     }
 
     private draw(): void {
