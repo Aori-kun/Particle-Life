@@ -158,7 +158,6 @@ export class Panel {
         const weight: number = Panel.forces[rowIndex][colIndex];
         Panel.forces[rowIndex][colIndex] = weight + 0.1;
         if(Panel.forces[rowIndex][colIndex] > 1) Panel.forces[rowIndex][colIndex] = -1;
-        console.log(Panel.forces[rowIndex][colIndex]);
         this.generateTable();
         this.launchEventListener()
     }
