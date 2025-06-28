@@ -1,0 +1,199 @@
+:root {
+    --panel-title: rgba(255, 255, 255, .65);
+    --random-btn-color: rgba(255, 255, 255, .7);
+    --toogle-light: #595959;
+    --bg-color: #202020;
+
+    --default-indicator-color: #ffffff;
+    --default-weight-color: #ff0000;
+
+    --color-1: var(--default-indicator-color);
+    --color-2: var(--default-indicator-color);
+    --color-3: var(--default-indicator-color);
+    --color-4: var(--default-indicator-color);
+    --color-5: var(--default-indicator-color);
+    --color-6: var(--default-indicator-color);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100svh;
+    width: 100vw;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg-color);
+    font-family: Inter, sans-serif;
+
+    canvas {
+        height: 100%;
+        width: 100%;
+    }
+
+    .settings__panel {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 1;
+        width: 250px;
+        height: 400px;
+        border-radius: .5rem;
+        background: #202020;
+        -webkit-box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.15);
+        -moz-box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.15);
+        display: flex;
+        flex-direction: column;
+
+        .settings__panel__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            color: var(--panel-title);
+            padding: 3px 10px;
+
+            button {
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                opacity: .6;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+
+        .settings__panel__weight {
+            height: 100%;
+            width: 100%;
+            padding: 0 10px 0 0;
+            display: flex;
+            justify-content: center;
+
+            table {
+                border-collapse: collapse;
+                table-layout: fixed;
+                width: 100%;
+                margin: 0 auto;
+
+
+                td, th {
+                    width: 15px;
+                    height: 15px;
+                    box-sizing: border-box;
+                    padding: 0;
+                    margin: 0;
+                    max-width: 15px;
+                    min-width: 15px;
+                    max-height: 15px;
+                    min-height: 15px;
+
+                    .container__indicator {
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        .indicator {
+                            border-radius: 5px;
+                        }
+
+                        .vertical__indicator {
+                            height: 10px;
+                            width: 5px;
+                        }
+
+                        .horizontal__indicator {
+                            height: 5px;
+                            width: 10px;
+                        }
+                    }
+                }
+
+                td:hover {
+                    opacity: .7;
+                    cursor: pointer;
+                    border: 1px solid var(--default-indicator-color);
+                }
+            }
+        }
+
+        .settings__panel__random {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+
+            button {
+                font-size: 1rem;
+                width: 100%;
+                color: var(--random-btn-color);
+                padding: 5px;
+                background: transparent;
+                border: 1px solid var(--random-btn-color);
+                border-radius: .25rem;
+                font-weight: bold;
+                transition: 0.2s;
+            }
+            button:hover {
+                background: var(--random-btn-color);
+                color: var(--bg-color);
+                cursor: pointer;
+                -webkit-box-shadow: 0 0 10px 0 rgb(255, 255, 255, 0.25);
+                -moz-box-shadow: 0 0 10px 0 rgb(255, 255, 255, 0.25);
+                box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.25);
+            }
+        }
+
+        .separator {
+            color: white;
+            height: 1px;
+            width: 90%;
+            align-self: center;
+            background: rgba(255, 255, 255, 0.6);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .settings__panel__input {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            color: var(--panel-title);
+        }
+    }
+}
+
+.color-1 {
+    background-color: var(--color-1);
+}
+
+.color-2 {
+    background-color: var(--color-2);
+}
+
+.color-3 {
+    background-color: var(--color-3);
+}
+
+.color-4 {
+    background-color: var(--color-4);
+}
+
+.color-5 {
+    background-color: var(--color-5);
+}
+
+.color-6 {
+    background-color: var(--color-6);
+}
+
+[class*="weight-"] {
+    background-color: var(--default-weight-color);
+}

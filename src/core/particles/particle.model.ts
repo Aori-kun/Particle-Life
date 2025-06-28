@@ -3,13 +3,15 @@ export class Particle {
     private _y: number;
     private _vx:number;
     private _vy: number;
-    private _color:string;
+    private readonly _mass: number;
+    private readonly _color:string;
 
-    constructor(x: number, y: number, vx: number, vy: number, color: string) {
+    constructor(x: number, y: number,mass: number, color: string) {
         this._x = x;
         this._y = y;
-        this._vx = vx;
-        this._vy = vy;
+        this._vx = Math.random() -.5;
+        this._vy = Math.random() -.5;
+        this._mass = mass;
         this._color = color;
     }
 
@@ -46,11 +48,11 @@ export class Particle {
         this._vy = value;
     }
 
-    get color(): string {
-        return this._color;
+    get mass(): number {
+        return this._mass;
     }
 
-    set color(value: string) {
-        this._color = value;
+    get color(): string {
+        return this._color;
     }
 }

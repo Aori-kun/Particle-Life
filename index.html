@@ -1,13 +1,49 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/src/style.css" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="/src/styles/style.css"/>
     <title>Vite + TS</title>
-  </head>
-  <body>
-    <canvas></canvas>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+</head>
+<body>
+<canvas></canvas>
+<div class="settings__panel">
+    <div class="settings__panel__header">
+        <p>Color's weight</p>
+        <button><img src="/img/reload.svg" alt="Reload icon"/></button>
+    </div>
+    <div class="settings__panel__weight" id="table-container">
+    </div>
+    <div class="settings__panel__random">
+        <button>Random</button>
+    </div>
+    <span class="separator"></span>
+    <div>
+        <div class="settings__panel__input">
+            <div class="settings__panel__input__context">
+                <img src="/img/blur.svg" alt=""/>
+                <label>Display Blur</label>
+            </div>
+            <div class="switch">
+                <label>
+                    <input class="blur__input" type="checkbox" role="switch" aria-labelledby="switch-label"/>
+                </label>
+            </div>
+        </div>
+        <div class="settings__panel__input">
+            <div class="settings__panel__input__context">
+                <img src="/img/pen.svg" alt=""/>
+                <label>Erase stroke</label>
+            </div>
+            <div class="toogle">
+                <label>
+                    <input class="erase__input" type="checkbox" role="switch" aria-labelledby="switch-label"/>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module" src="/src/core/main.ts"></script>
+</body>
 </html>
