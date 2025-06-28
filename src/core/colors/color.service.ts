@@ -9,5 +9,4 @@ export class ColorService {
     private static random(min = 100, max = 255): number {
         return Math.floor( Math.random() * (max - min) + min);
     }
-
 }

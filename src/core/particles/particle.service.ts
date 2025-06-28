@@ -1,46 +1,42 @@
 import {Particle} from "./particle.model.ts";
 import {NB_COLORS, NB_PARTICLES, PARTICLE_SIZE, VELOCITY} from "../config/config.ts";
-import {ColorService} from "../colors/color.service.ts";
 import {MassService} from "../mass/mass.service.ts";
 import {PositionService} from "../postion/position.service.ts";
-import {WeightService} from "../weight/weight.service.ts";
 import {Panel} from "../../panel/panel.ts";
 
 export class ParticleService {
-    private readonly _particles: Particle[] = [];
-    private readonly _forces: number[][] = [];
-    private readonly _colors: string[] = [];
     private readonly _ctx: CanvasRenderingContext2D;
+    private _particles: Particle[] = [];
 
     constructor(ctx: CanvasRenderingContext2D) {
         this._ctx = ctx;
+        this.initParticles();
+    }
+
+
+    public start(): void {
+        this.applyForces();
+        this.draw();
+    }
+
+    public initParticles(): void {
         const particles: Particle[] = [];
 
         const nbParticlesPerColor: number = NB_PARTICLES / NB_COLORS;
-        const colors: string[] = [];
 
-        for (let i: number = 0; i < NB_COLORS; i++) {
-
-            const color: string = ColorService.generateColor();
+        for (const color of Panel._colors) {
             const mass: number = MassService.generateMass();
 
-            for (let j: number = 0; j < nbParticlesPerColor; j++) {
-                const position: { x: number, y: number } = PositionService.generatePosition(this._ctx.canvas.width, this._ctx.canvas.height);
+            for (let i: number = 0; i < nbParticlesPerColor; i++) {
+                const position: {
+                    x: number,
+                    y: number
+                } = PositionService.generatePosition(this._ctx.canvas.width, this._ctx.canvas.height);
                 particles.push(new Particle(position.x, position.y, mass, color));
             }
-
-            colors.push(color);
         }
 
         this._particles = particles;
-        this._colors = colors;
-        this._forces = WeightService.generateWeight(colors);
-        new Panel(colors, this._forces);
-    }
-
-    public init(): void {
-        this.applyForces();
-        this.draw();
     }
 
     private applyForces(): void {
@@ -69,7 +65,7 @@ export class ParticleService {
 
                 const distanceX: number = otherParticle.x - particle.x;
                 const distanceY: number = otherParticle.y - particle.y;
-                const distance: number = Math.sqrt(distanceX**2 + distanceY**2);
+                const distance: number = Math.sqrt(distanceX ** 2 + distanceY ** 2);
 
                 if (distance < limit) {
                     const g: number = this.getGravitationalForce(particle, otherParticle);
@@ -109,23 +105,32 @@ export class ParticleService {
     }
 
     private getGravitationalForce(particle: Particle, otherParticle: Particle): number {
-        const indexColorParticle: number = this._colors.indexOf(particle.color);
-        const indexColorOtherParticle: number = this._colors.indexOf(otherParticle.color);
-        return this._forces[indexColorParticle][indexColorOtherParticle];
+        const indexColorParticle: number = Panel._colors.indexOf(particle.color);
+        const indexColorOtherParticle: number = Panel._colors.indexOf(otherParticle.color);
+        return Panel._forces[indexColorParticle][indexColorOtherParticle];
     }
 
     private draw(): void {
-        this._ctx.clearRect(0, 0, this._ctx.canvas.width, this._ctx.canvas.height);
+        if(Panel.erase) this._ctx.clearRect(0, 0, this._ctx.canvas.width, this._ctx.canvas.height);
+
+        this._ctx.shadowBlur = 0;
+        this._ctx.shadowColor = 'transparent';
+        this._ctx.shadowOffsetX = 0;
+        this._ctx.shadowOffsetY = 0;
 
         for (const particle of this._particles) {
             this._ctx.beginPath();
             this._ctx.arc(particle.x, particle.y, PARTICLE_SIZE, 0, 2 * Math.PI);
             this._ctx.fillStyle = particle.color;
+
+            if (Panel.displayBlur) {
+                this._ctx.shadowBlur = 8;
+                this._ctx.shadowColor = particle.color;
+                this._ctx.shadowOffsetX = 0;
+                this._ctx.shadowOffsetY = 0;
+            }
+
             this._ctx.fill();
-            this._ctx.shadowBlur = 8;
-            this._ctx.shadowColor = particle.color;
-            this._ctx.shadowOffsetX = 0;
-            this._ctx.shadowOffsetY = 0;
             this._ctx.closePath();
         }
     }

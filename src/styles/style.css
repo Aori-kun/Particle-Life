@@ -2,6 +2,7 @@
     --panel-title: rgba(255, 255, 255, .65);
     --random-btn-color: rgba(255, 255, 255, .7);
     --toogle-light: #595959;
+    --bg-color: #202020;
 
     --default-indicator-color: #ffffff;
     --default-weight-color: #ff0000;
@@ -24,7 +25,7 @@ html, body {
     padding: 0;
     margin: 0;
     overflow: hidden;
-    background: #202020;
+    background: var(--bg-color);
     font-family: Inter, sans-serif;
 
     canvas {
@@ -54,6 +55,17 @@ html, body {
             font-size: 1.2rem;
             color: var(--panel-title);
             padding: 3px 10px;
+
+            button {
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                opacity: .6;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
         }
 
         .settings__panel__weight {
@@ -121,6 +133,15 @@ html, body {
                 border: 1px solid var(--random-btn-color);
                 border-radius: .25rem;
                 font-weight: bold;
+                transition: 0.2s;
+            }
+            button:hover {
+                background: var(--random-btn-color);
+                color: var(--bg-color);
+                cursor: pointer;
+                -webkit-box-shadow: 0 0 10px 0 rgb(255, 255, 255, 0.25);
+                -moz-box-shadow: 0 0 10px 0 rgb(255, 255, 255, 0.25);
+                box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.25);
             }
         }
 

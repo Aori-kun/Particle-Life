@@ -1,27 +1,49 @@
-export class Panel {
-    private readonly _colors: string[];
-    private readonly _forces: number[][];
+import {WeightService} from "../core/weight/weight.service.ts";
+import {NB_COLORS} from "../core/config/config.ts";
+import {ColorService} from "../core/colors/color.service.ts";
+import {ParticleService} from "../core/particles/particle.service.ts";
 
-    constructor(colors: string[], forces: number[][]) {
-        this._colors = colors;
-        this._forces = forces;
+export class Panel {
+    public static _colors: string[] = [];
+    public static _forces: number[][];
+    public static displayBlur: boolean = false;
+    public static erase: boolean = true;
+    public static particleService: ParticleService | undefined = undefined;
+
+    constructor() {
         this.init();
     }
 
-    private init(): void {
-        for (let i = 0; i < this._colors.length; i++) {
-            document.documentElement.style.setProperty(`--color-${i + 1}`, this._colors[i]);
+    public init(): void {
+        this.initColors();
+        this.initForces();
+
+        for (let i = 0; i < Panel._colors.length; i++) {
+            document.documentElement.style.setProperty(`--color-${i + 1}`, Panel._colors[i]);
         }
 
         let index: number = 1;
-        for (let i: number = 0; i < this._forces.length; i++) {
-            for (let j: number = 0; j < this._forces[i].length; j++) {
-                document.documentElement.style.setProperty(`--weight-${index}`, this.valueToColor(this._forces[i][j]));
+        for (let i: number = 0; i < Panel._forces.length; i++) {
+            for (let j: number = 0; j < Panel._forces[i].length; j++) {
+                document.documentElement.style.setProperty(`--weight-${index}`, this.valueToColor(Panel._forces[i][j]));
                 index++;
             }
         }
 
+
         this.generateTable();
+        this.launchEventListener();
+    }
+
+    private initForces(): void {
+        Panel._forces = WeightService.generateWeight(Panel._colors);
+    }
+
+    private initColors(): void {
+        Panel._colors = [];
+        for (let i: number = 0; i < NB_COLORS; i++) {
+            Panel._colors.push(ColorService.generateColor());
+        }
     }
 
     private generateTable(): void {
@@ -34,7 +56,7 @@ export class Panel {
 
         headerRow.appendChild(document.createElement('th'));
 
-        for (let i: number = 0; i < this._colors.length; i++) {
+        for (let i: number = 0; i < Panel._colors.length; i++) {
             const th: HTMLTableCellElement = document.createElement('th');
             const containerDiv: HTMLDivElement = document.createElement('div');
             containerDiv.className = 'container__indicator';
@@ -50,7 +72,7 @@ export class Panel {
         table.appendChild(headerRow);
 
         let cellIndex: number = 1;
-        for (let i: number = 0; i < this._forces.length; i++) {
+        for (let i: number = 0; i < Panel._forces.length; i++) {
             const row: HTMLTableRowElement = document.createElement('tr');
 
             const th: HTMLTableCellElement = document.createElement('th');
@@ -64,11 +86,11 @@ export class Panel {
             th.appendChild(containerDiv);
             row.appendChild(th);
 
-            for (let j: number = 0; j < this._forces[i].length; j++) {
+            for (let j: number = 0; j < Panel._forces[i].length; j++) {
                 const td: HTMLTableCellElement = document.createElement('td');
                 td.className = `weight-${cellIndex}`;
 
-                td.style.backgroundColor = this.valueToColor(this._forces[i][j]);
+                td.style.backgroundColor = this.valueToColor(Panel._forces[i][j]);
 
                 row.appendChild(td);
                 cellIndex++;
@@ -81,13 +103,42 @@ export class Panel {
         tableContainer.appendChild(table);
     }
 
+    private launchEventListener(): void {
+
+        const randomButton: Element | null = document.querySelector(".settings__panel__random button");
+        const reloadButton: Element | null = document.querySelector(".settings__panel__header button");
+        const blurCheckbox: HTMLInputElement | null = document.querySelector(".blur__input");
+        const eraseCheckbox: HTMLInputElement | null = document.querySelector(".erase__input");
+
+        if (!randomButton) throw new Error("Element not found");
+        if (!blurCheckbox) throw new Error("Element not found");
+        if (!eraseCheckbox) throw new Error("Element not found")
+        if (!reloadButton) throw new Error("Element not found");
+
+        eraseCheckbox.checked = true;
+
+        randomButton.addEventListener('click', (): void => {
+            this.initForces();
+            this.generateTable();
+        });
+        blurCheckbox.addEventListener('input', (): void => {
+            Panel.displayBlur = blurCheckbox.checked;
+        });
+        eraseCheckbox.addEventListener('input', () => {
+            Panel.erase = eraseCheckbox.checked
+        })
+        reloadButton.addEventListener('click', (): void => {
+            if (Panel.particleService) Panel.particleService.initParticles();
+        });
+    }
+
     private valueToColor(value: number): string {
-        const clamped = Math.max(-1, Math.min(1, value));
+        const clamped: number = Math.max(-1, Math.min(1, value));
 
-        const normalized = (clamped + 1) / 2;
+        const normalized: number = (clamped + 1) / 2;
 
-        const red = Math.round(255 * (1 - normalized));
-        const green = Math.round(255 * normalized);
+        const red: number = Math.round(255 * (1 - normalized));
+        const green: number = Math.round(255 * normalized);
         const blue = 0;
 
         return `rgb(${red}, ${green}, ${blue})`;
