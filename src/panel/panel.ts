@@ -131,12 +131,13 @@ export class Panel {
             if (Panel.particleService) Panel.particleService.initParticles();
         });
 
-        for(const input of weightInput) input.addEventListener('click', (event: Event): void => {
+        for (const input of weightInput) input.addEventListener('click', (event: Event): void => {
             const el: HTMLTableCellElement = event.currentTarget as HTMLTableCellElement;
             const index: number = Number(el.className.match(/weight-(\d+)/)?.[1]);
 
-            const rowIndex: number = Math.floor((index - 1) / 6);
-            const colIndex: number = (index - 1) % 6;
+            const rowIndex: number = Math.floor((index - 1) / NB_COLORS);
+            const colIndex: number = (index - 1) % NB_COLORS;
+
 
             this.incrementWeight(rowIndex, colIndex);
         })
@@ -157,7 +158,7 @@ export class Panel {
     private incrementWeight(rowIndex: number, colIndex: number): void {
         const weight: number = Panel.forces[rowIndex][colIndex];
         Panel.forces[rowIndex][colIndex] = weight + 0.1;
-        if(Panel.forces[rowIndex][colIndex] > 1) Panel.forces[rowIndex][colIndex] = -1;
+        if (Panel.forces[rowIndex][colIndex] > 1) Panel.forces[rowIndex][colIndex] = -1;
         this.generateTable();
         this.launchEventListener()
     }
