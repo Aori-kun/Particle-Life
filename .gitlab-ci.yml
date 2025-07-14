@@ -1,5 +1,7 @@
 stages:
   - sync
+  - build
+  - deploy
 
 sync_repo:
   stage: sync
@@ -13,3 +15,31 @@ sync_repo:
     - cd repo-mirror
     - git remote set-url --push origin "https://oauth2:${GITLAB_PAT}@gitlab.com/${CI_PROJECT_PATH}.git"
     - git push --mirror
+
+build_app:
+  stage: build
+  image: alpine:latest
+  before_script:
+    - apt-get update && apt-get install -y rsync openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KEY_VPS" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H <$SERVER_IP> >> ~/.ssh/known_hosts
+  script:
+    - ssh -i $SSH_KEY_VPS -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker build . --tag caddy:latest"
+  only:
+    - V2
+
+deploy_app:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apt-get update && apt-get install -y rsync openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KEY_VPS" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H <$SERVER_IP> >> ~/.ssh/known_hosts
+  script:
+    - ssh -i $SSH_KEY_VPS -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker-compose up -d"
+  only:
+    - V2
