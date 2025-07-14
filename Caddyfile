@@ -1,0 +1,5 @@
+aori-san.com {
+    root * /usr/share/caddy
+    file_server
+    encode gzip
+}
