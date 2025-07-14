@@ -18,13 +18,13 @@ sync_repo:
 
 build_app:
   stage: build
-  image: alpine:latest
+  image: debian:latest
   before_script:
     - apt-get update && apt-get install -y rsync openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY_VPS" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H <$SERVER_IP> >> ~/.ssh/known_hosts
+    - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
   script:
     - ssh -i $SSH_KEY_VPS -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker build . --tag caddy:latest"
   only:
@@ -32,13 +32,13 @@ build_app:
 
 deploy_app:
   stage: deploy
-  image: alpine:latest
+  image: debian:latest
   before_script:
     - apt-get update && apt-get install -y rsync openssh-client
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY_VPS" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H <$SERVER_IP> >> ~/.ssh/known_hosts
+    - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
   script:
     - ssh -i $SSH_KEY_VPS -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker-compose up -d"
   only:
