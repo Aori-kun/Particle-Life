@@ -22,7 +22,7 @@ build_app:
   before_script:
     - apt-get update && apt-get install -y rsync openssh-client
     - mkdir -p ~/.ssh
-    - echo "$SSH_KEY_VPS" | tr -d '\r' > ~/.ssh/id_rsa
+    - echo "$SSH_KEY_VPS" | base64 -d > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
   script:
@@ -36,7 +36,7 @@ deploy_app:
   before_script:
     - apt-get update && apt-get install -y rsync openssh-client
     - mkdir -p ~/.ssh
-    - echo "$SSH_KEY_VPS" | tr -d '\r' > ~/.ssh/id_rsa
+    - echo "$SSH_KEY_VPS" | base64 -d > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
   script:
