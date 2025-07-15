@@ -30,8 +30,8 @@ build_app:
     - >
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP
       'if [ ! -d "./app/particle-life" ]; then cd ./app && git clone $GITHUB_REPO_URL particle-life; fi'
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && git fetch && git pull"
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && docker build . --tag caddy:latest"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "rm -rf ./app/particle-life"
   rules:
     - if: '$CI_COMMIT_BRANCH == "V2"'
 
