@@ -4,7 +4,7 @@ name: particle-life
 
 services:
   caddy:
-    build: .
+    image: caddy
     ports:
       - '80:80'
       - '443:443'
