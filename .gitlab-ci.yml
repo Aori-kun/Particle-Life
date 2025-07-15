@@ -29,9 +29,9 @@ build_app:
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "mkdir -p ./app"
     - >
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP
-      'if [ ! -d "./app/particle-life" ]; then git clone $GITHUB_REPO_URL ./app/particle-life; fi'
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app && git fetch && git pull"
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app && docker build . --tag caddy:latest"
+      'if [ ! -d "./app/particle-life" ]; then cd ./app && git clone $GITHUB_REPO_URL particle-life; fi'
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && git fetch && git pull"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && docker build . --tag caddy:latest"
   rules:
     - if: '$CI_COMMIT_BRANCH == "V2"'
 
@@ -45,6 +45,6 @@ deploy_app:
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
   script:
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app && docker compose up -d"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && docker compose up -d"
   rules:
     - if: '$CI_COMMIT_BRANCH == "V2"'
