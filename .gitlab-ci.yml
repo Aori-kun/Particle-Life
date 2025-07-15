@@ -31,13 +31,10 @@ build_app:
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << EOT
         if [ ! -d "./app/particle-life" ]; 
         then 
-          echo $GITHUB_REPO_URL
-          echo "$GITHUB_REPO_URL"
           cd ./app && git clone $GITHUB_REPO_URL particle-life; 
         fi
       EOT
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && docker build . --tag caddy:latest"
-    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "rm -rf ./app/particle-life"
   rules:
     - if: '$CI_COMMIT_BRANCH == "V2"'
 
@@ -52,5 +49,6 @@ deploy_app:
     - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
   script:
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && docker compose up -d"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "rm -rf ./app/particle-life"
   rules:
     - if: '$CI_COMMIT_BRANCH == "V2"'
