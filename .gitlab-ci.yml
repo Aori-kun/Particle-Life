@@ -31,6 +31,8 @@ build_app:
       ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << EOT
         if [ ! -d "./app/particle-life" ]; 
         then 
+          echo $GITHUB_REPO_URL
+          echo "$GITHUB_REPO_URL"
           cd ./app && git clone $GITHUB_REPO_URL particle-life; 
         fi
       EOT
