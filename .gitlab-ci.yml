@@ -1,7 +1,16 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: always
+    - if: $CI_PIPELINE_SOURCE == "web"
+      when: always
+    - when: never
+
 stages:
   - sync
   - build
   - deploy
+  - cleanup
 
 sync_repo:
   stage: sync
@@ -58,6 +67,26 @@ deploy_app:
     - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
   script:
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && docker compose up -d"
+    - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "rm -rf ./app/particle-life"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "V2"'
+  resource_group: production
+  environment: production
+
+cleanup:
+  stage: cleanup
+  image: debian:latest
+  needs:
+    - sync_repo
+    - build_app
+    - deploy_app
+  before_script:
+    - apt-get update && apt-get install -y rsync openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KEY_VPS" | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H "$SERVER_IP" >> ~/.ssh/known_hosts
+  script:
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "rm -rf ./app/particle-life"
   rules:
     - if: '$CI_COMMIT_BRANCH == "V2"'
