@@ -15,10 +15,14 @@ sync_repo:
     - cd repo-mirror
     - git remote set-url --push origin "https://oauth2:${GITLAB_PAT}@gitlab.com/${CI_PROJECT_PATH}.git"
     - git push --mirror
+  resource_group: production
+  environment: production
 
 build_app:
   stage: build
   image: debian:latest
+  needs:
+    - sync_repo
   before_script:
     - apt-get update && apt-get install -y rsync openssh-client
     - mkdir -p ~/.ssh
@@ -37,10 +41,15 @@ build_app:
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd ./app/particle-life && docker build . --tag caddy:latest"
   rules:
     - if: '$CI_COMMIT_BRANCH == "V2"'
+  resource_group: production
+  environment: production
 
 deploy_app:
   stage: deploy
   image: debian:latest
+  needs:
+    - sync_repo
+    - build_app
   before_script:
     - apt-get update && apt-get install -y rsync openssh-client
     - mkdir -p ~/.ssh
@@ -52,3 +61,5 @@ deploy_app:
     - ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "rm -rf ./app/particle-life"
   rules:
     - if: '$CI_COMMIT_BRANCH == "V2"'
+  resource_group: production
+  environment: production
