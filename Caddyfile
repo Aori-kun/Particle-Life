@@ -1,0 +1,9 @@
+aori-san.com {
+    root * /usr/share/caddy
+    file_server
+    encode gzip
+}
+
+www.aori-san.com {
+    redir https://aori-san.com/particle-life permanent
+}

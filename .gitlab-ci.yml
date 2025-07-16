@@ -1,0 +1,7 @@
+include:
+  - project: 'aori-pro/config'
+    ref: main
+    file: '/static.gitlab-ci.yml'
+
+variables:
+   DEFAULT_BRANCH : $DEFAULT_BRANCH
