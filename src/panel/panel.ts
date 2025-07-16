@@ -104,18 +104,26 @@ export class Panel {
 
     private launchEventListener(): void {
 
+        const panel: Element | null = document.querySelector(".settings__panel");
         const randomButton: Element | null = document.querySelector(".settings__panel__random button");
-        const reloadButton: Element | null = document.querySelector(".settings__panel__header button");
+        const reloadButton: Element | null = document.querySelector(".settings__panel__header .reload");
+        const chevronButton: Element | null = document.querySelector(".settings__panel__header .chevron");
         const blurCheckbox: HTMLInputElement | null = document.querySelector(".blur__input");
         const eraseCheckbox: HTMLInputElement | null = document.querySelector(".erase__input");
         const weightInput: HTMLCollectionOf<Element> | null = document.getElementsByClassName("weight__input");
 
+        if (!panel) throw new Error("Element not found");
         if (!randomButton) throw new Error("Element not found");
         if (!blurCheckbox) throw new Error("Element not found");
         if (!eraseCheckbox) throw new Error("Element not found")
         if (!reloadButton) throw new Error("Element not found");
+        if (!chevronButton) throw new Error("Element not found");
 
         eraseCheckbox.checked = true;
+
+        chevronButton.addEventListener('click', (): void => {
+            panel.classList.toggle('hide');
+        })
 
         randomButton.addEventListener('click', (): void => {
             this.initForces();
