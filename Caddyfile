@@ -1,5 +1,8 @@
 aori-san.com {
-    root * /usr/share/caddy
-    file_server
-    encode gzip
+    handle_path /particle-life {
+        root * /usr/share/caddy
+        file_server
+        encode gzip
+    }
+    rewrite * aori-san.com/particle-life
 }
