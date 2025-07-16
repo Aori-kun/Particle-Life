@@ -1,8 +1,11 @@
 aori-san.com {
-    handle_path /particle-life {
-        root * /usr/share/caddy
+    @rewrite_not_particle not path /particle-life*
+    rewrite @rewrite_not_particle /particle-life
+
+    root /particle-life /usr/share/caddy
+
+    handle /particle-life {
         file_server
         encode gzip
     }
-    rewrite * aori-san.com/particle-life
 }
