@@ -2,11 +2,9 @@ aori-san.com {
     @not_particle not path /particle-life*
     redir @not_particle /particle-life
 
-    handle /particle-life* {
-        root * /usr/share/caddy
-        file_server
-        encode gzip
-    }
+    root * /usr/share/caddy
+    file_server
+    encode gzip
 }
 
 www.aori-san.com {
