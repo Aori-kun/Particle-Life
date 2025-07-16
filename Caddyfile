@@ -1,9 +1,6 @@
 aori-san.com {
 
-    @not_particle {
-        not path /particle-life
-    }
-    rewrite @not_particle /particle-life
+    redir * /particle-life
 
     handle_path /particle-life {
         root * /usr/share/caddy
