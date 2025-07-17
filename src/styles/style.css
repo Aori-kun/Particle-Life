@@ -33,6 +33,7 @@ html, body {
         width: 100%;
     }
 
+
     .settings__panel {
         position: absolute;
         top: 20px;
@@ -47,6 +48,12 @@ html, body {
         box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.15);
         display: flex;
         flex-direction: column;
+        transition: 0.75s;
+
+        * {
+            transition: 0.75s;
+            opacity: 1;
+        }
 
         .settings__panel__header {
             display: flex;
@@ -56,14 +63,32 @@ html, body {
             color: var(--panel-title);
             padding: 3px 10px;
 
-            button {
-                background: transparent;
-                border: none;
-                cursor: pointer;
-                opacity: .6;
+            .settings__panel__header__btn {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
 
-                &:hover {
-                    opacity: 1;
+                button {
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                    opacity: .6;
+
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+
+                .reload img {
+                    width: 15px;
+                    height: 15px;
+                }
+
+                .chevron img {
+                    width: 13px;
+                    height: 13px;
+                    transform: rotate(-90deg);
                 }
             }
         }
@@ -168,6 +193,19 @@ html, body {
             color: var(--panel-title);
         }
     }
+
+    .hide {
+        height: 65px;
+
+        .settings__panel__weight, .settings__panel__random, .separator, .settings__panel__input {
+            opacity: 0;
+        }
+
+        .chevron img {
+            transform: rotate(90deg) !important;
+        }
+    }
+
 }
 
 .color-1 {

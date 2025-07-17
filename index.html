@@ -4,14 +4,18 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="/src/styles/style.css"/>
-    <title>Vite + TS</title>
+    <title>Particle Life</title>
+    <link rel="icon" href="favicon.png"/>
 </head>
 <body>
 <canvas></canvas>
 <div class="settings__panel">
     <div class="settings__panel__header">
         <p>Color's weight</p>
-        <button><img src="/img/reload.svg" alt="Reload icon"/></button>
+        <div class="settings__panel__header__btn">
+            <button class="chevron"><img src="/img/chevron.svg" alt="Close / Open settings"/></button>
+            <button class="reload"><img src="/img/reload.svg" alt="Reload icon"/></button>
+        </div>
     </div>
     <div class="settings__panel__weight" id="table-container">
     </div>
